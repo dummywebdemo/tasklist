@@ -1,0 +1,31 @@
+{% extends 'adminBase.html.twig' %}
+{% block body %}
+        <h2>A Dashboard</h2>
+        <table class="table table-staggered">
+                <thead>
+                <tr>
+                        <th>#</th>
+                        <th>Email</th>
+                        <th>Is Active</th>
+                        <th>Options</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {%  for user in users %}
+                        <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.isActive }}</td>
+                                <td><a class="btn btn-success" href="{{ app.request.getBaseUrl() }}/user/details/{{ user.id}}">Details</a>
+
+                                        <a class="btn btn-success" href="{{ app.request.getBaseUrl() }}/user/edit/{{ user.id}}">Edit</a>
+                                        <a class="btn btn-success" href="{{ app.request.getBaseUrl() }}/user/delete/{{ user.id}}">Delete</a>
+
+                                </td>
+                        </tr>
+
+                {% endfor %}
+                </tbody>
+        </table>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <table class="table table-staggered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Due Date</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {%  for task in tasks %}
+                <tr>
+                    <td>{{ task.id }}</td>
+                    <td>{{ task.name }}</td>
+                    <td>{{ task.dueDate | date('Y m D') }}</td>
+                    <td><a class="btn btn-success" href="{{ app.request.getBaseUrl() }}/task/details/{{ task.id}}">Details</a>
+
+                        <a class="btn btn-success" href="{{ app.request.getBaseUrl() }}/task/edit/{{ task.id}}">Edit</a>
+                        <a class="btn btn-success" href="{{ app.request.getBaseUrl() }}/task/delete/{{ task.id}}">Delete</a>
+
+                    </td>
+                </tr>
+
+            {% endfor %}
+        </tbody>
+        </table>
+{% endblock %}

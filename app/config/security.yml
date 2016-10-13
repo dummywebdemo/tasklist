@@ -1,0 +1,97 @@
+# app/config/security.yml
+security:
+    encoders:
+        AppBundle\Entity\User: bcrypt
+        AppBundle\Entity\Backend\Admin: bcrypt
+
+    role_hierarchy:
+            ROLE_ADMIN: ROLE_USER
+#            ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+#        chain_providers:
+#                 chain:
+#                      providers: [user_security, admin_security]
+        user_secured:
+                  name: user_security
+                  entity: { class:  AppBundle\Entity\User, property: email }
+        admin_secured:
+                  name: admin_security
+                  entity: { class:  AppBundle\Entity\Backend\Admin, property: email }
+
+
+
+#        our_users:
+#          name: user_security
+#          entity: { class:  AppBundle\Entity\User, property: email }
+#        our_admin:
+#          name: admin_security
+#          entity: { class:  AppBundle\Entity\Backend\Admin, property: email }
+
+
+    firewalls:
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        admin_secured:
+            pattern: ^/admin
+            anonymous: ~
+            provider: admin_security
+#            provider: chain_providers
+            guard:
+                authenticators:
+                    - app.security.backend.admin_login_form_authenticator
+            form_login:
+                login_path: /admin/login
+                check_path:  /admin/login_check
+                default_target_path: /admin/dashboard
+            logout:
+                path: /admin/logout
+                target: /admin/login
+
+        user_secured:
+            pattern: ^/
+            anonymous: ~
+            provider: user_security
+#            provider: chain_providers
+            guard:
+                authenticators:
+                    - app.security.login_form_authenticator
+            form_login:
+                login_path: /login
+                check_path: /login_check
+                default_target_path: /tasks
+            logout:
+                path: /logout
+                target: /tasks
+
+
+
+#        main:
+#            pattern:  ^/
+#            anonymous:  true
+#            provider: user_security
+#            guard:
+#                authenticators:
+#                  - app.security.login_form_authenticator
+#            logout:
+#                path: /logout
+#                target: /tasks
+#
+#        admin_main:
+#            pattern:  ^/
+#            anonymous:  true
+#            provider: admin_security
+#            guard:
+#                authenticators:
+#                  - app.security.backend.admin_login_form_authenticator
+#            logout:
+#                path: /admin/logout
+#                target: /tasks
+
+
+    access_control:
+        - { path: ^/admin/login$,   roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin,          roles: ROLE_ADMIN }
